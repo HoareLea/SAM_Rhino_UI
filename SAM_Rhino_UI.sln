@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SAM_Rhino_UI", "SAM_Rhino_U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.Analytical.Rhino.UI", "SAM_Rhino_UI\SAM.Analytical.Rhino.UI\SAM.Analytical.Rhino.UI.csproj", "{1B993CD0-7C07-4F68-895A-106030D515A4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.Analytical.Rhino.Solver.UI", "SAM_Rhino_UI\SAM.Analytical.Rhino.Solver.UI\SAM.Analytical.Rhino.Solver.UI.csproj", "{ADB62134-CD48-4B5C-B628-541E36ECFE9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +19,17 @@ Global
 		{1B993CD0-7C07-4F68-895A-106030D515A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B993CD0-7C07-4F68-895A-106030D515A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B993CD0-7C07-4F68-895A-106030D515A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADB62134-CD48-4B5C-B628-541E36ECFE9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADB62134-CD48-4B5C-B628-541E36ECFE9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADB62134-CD48-4B5C-B628-541E36ECFE9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADB62134-CD48-4B5C-B628-541E36ECFE9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1B993CD0-7C07-4F68-895A-106030D515A4} = {4FDEDAD6-FCEC-4426-9A3B-086BF3C99CC0}
+		{ADB62134-CD48-4B5C-B628-541E36ECFE9D} = {4FDEDAD6-FCEC-4426-9A3B-086BF3C99CC0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E0308FF-C8D5-4700-951A-859CB9D4FD09}
