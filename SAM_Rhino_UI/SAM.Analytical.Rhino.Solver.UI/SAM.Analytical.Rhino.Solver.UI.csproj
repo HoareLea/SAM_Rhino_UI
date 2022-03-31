@@ -50,8 +50,8 @@
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\..\build\Rhino Plugins\</OutputPath>
-    <DocumentationFile>..\..\..\build\Rhino Plugins\SAM.Analytical.Rhino.Solver.Plugin.xml</DocumentationFile>
+    <OutputPath>..\..\build\</OutputPath>
+    <DocumentationFile>..\..\build\SAM.Analytical.Rhino.Solver.UI.xml</DocumentationFile>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

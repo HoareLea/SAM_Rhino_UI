@@ -71,7 +71,7 @@
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\build\</OutputPath>
-    <DocumentationFile>..\..\build\SAM.Analytical.Rhino.Plugin.xml</DocumentationFile>
+    <DocumentationFile>..\..\build\SAM.Analytical.Rhino.UI.xml</DocumentationFile>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
