@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Classes\Commands\ExportGeometry.cs" />
     <EmbeddedResource Include="Classes\Commands\Test.cs" />
     <EmbeddedResource Include="Classes\AnalyticalPlugin.cs" />
   </ItemGroup>
