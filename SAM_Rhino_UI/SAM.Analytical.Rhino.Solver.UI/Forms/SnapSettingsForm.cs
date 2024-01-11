@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace SAM.Analytical.Rhino.Solver.Plugin
 {
-    public partial class SnapSettingsForm<T> : Form where T : Core.SAMObject, Geometry.Spatial.IFace3DObject 
+    public partial class SnapSettingsForm<T> : Form where T : Core.SAMObject, Geometry.Object.Spatial.IFace3DObject 
     {
         private List<T> face3DObjects;
 
