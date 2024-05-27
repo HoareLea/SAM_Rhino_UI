@@ -26,7 +26,7 @@ namespace SAM.Analytical.Rhino.UI
 
         protected override global::Rhino.Commands.Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            global::Rhino.Commands.Result result = RhinoGet.GetOneObject("Select Panel", false, ObjectType.Brep, out ObjRef objRef);
+            global::Rhino.Commands.Result result = RhinoGet.GetOneObject("Select AnalyticalObject", false, ObjectType.Brep, out ObjRef objRef);
             if (result != global::Rhino.Commands.Result.Success || objRef == null)
             {
                 return result;
@@ -38,23 +38,23 @@ namespace SAM.Analytical.Rhino.UI
                 return global::Rhino.Commands.Result.Failure;
             }
 
-            List<Panel> panels = null;
-            string @string = null;
+            List<IAnalyticalObject> analyticalObjects = null;
             if (brep.HasUserData)
             {
-                @string = brep.GetUserString("SAM");
+                string @string = brep.GetUserString("SAM");
                 if (!string.IsNullOrWhiteSpace(@string))
                 {
-                    panels = Core.Convert.ToSAM<Panel>(@string);
+                    analyticalObjects = Core.Convert.ToSAM<IAnalyticalObject>(@string);
+                    analyticalObjects = analyticalObjects?.FindAll(x => x is Panel || x is Aperture);
                 }
             }
 
-            if(panels == null)
+            if(analyticalObjects == null || analyticalObjects.Count == 0)
             {
                 List<Geometry.Spatial.ISAMGeometry3D> geometries = Geometry.Rhino.Convert.ToSAM(brep);
                 if (geometries != null && geometries.Count != 0)
                 {
-                    panels = new List<Panel>();
+                    analyticalObjects = new List<IAnalyticalObject>();
                     foreach (Geometry.Spatial.ISAMGeometry3D geometry in geometries)
                     {
                         List<Geometry.Spatial.Face3D> face3Ds = new List<Geometry.Spatial.Face3D>();
@@ -88,13 +88,23 @@ namespace SAM.Analytical.Rhino.UI
                                 continue;
                             }
 
-                            panels.Add(panel_Temp);
+                            analyticalObjects.Add(panel_Temp);
                         }
 
                     }
                 }
             }
 
+            if(analyticalObjects == null || analyticalObjects.Count == 0)
+            {
+                return global::Rhino.Commands.Result.Failure;
+            }
+
+            List<Panel> panels = analyticalObjects.FindAll(x => x is Panel)?.Cast<Panel>()?.ToList();
+            if(panels == null)
+            {
+                return global::Rhino.Commands.Result.Failure;
+            }
 
             MaterialLibrary materialLibrary = Query.DefaultMaterialLibrary();
 
@@ -118,7 +128,7 @@ namespace SAM.Analytical.Rhino.UI
                     panels[i] = Create.Panel(panels[i].Guid, panel, panels[i].PlanarBoundary3D);
                 }
 
-                @string = Core.Convert.ToString(panels);
+                string @string = Core.Convert.ToString(panels);
 
                 brep.SetUserString("SAM", @string);
             }

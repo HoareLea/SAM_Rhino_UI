@@ -17,6 +17,15 @@
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\**\*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Modify\**" />
+    <Compile Remove="Query\**" />
+    <EmbeddedResource Remove="Modify\**" />
+    <EmbeddedResource Remove="Query\**" />
+    <None Remove="Modify\**" />
+    <None Remove="Query\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -36,11 +45,6 @@
     <Reference Include="SAM.Geometry">
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Modify\" />
-    <Folder Include="Query\" />
   </ItemGroup>
   
   <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
