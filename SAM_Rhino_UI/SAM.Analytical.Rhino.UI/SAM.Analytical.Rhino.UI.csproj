@@ -50,13 +50,13 @@
       <HintPath>..\..\..\SAM_Solver\build\SAM.Analytical.Solver.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.Windows">
-      <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\Framework\build\SAM.Analytical.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core">
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Windows">
-      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry">
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
@@ -83,7 +83,7 @@
   </PropertyGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="set SAM_DIR=$(APPDATA)\McNeel\Rhinoceros\packages\7.0\SAM\1.0.0\&#xD;&#xA;if not exist &quot;%25SAM_DIR%25&quot; mkdir &quot;%25SAM_DIR%25&quot;&#xD;&#xA;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.rhp&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.xml&quot; &quot;%25SAM_DIR%25&quot;" />
+    <Exec Command="@echo off&#xA;REM Set directories for Rhinoceros versions 7.0 and 8.0&#xA;set SAM_DIR7=$(APPDATA)\McNeel\Rhinoceros\packages\7.0\SAM\1.0.0\&#xA;set SAM_DIR8=$(APPDATA)\McNeel\Rhinoceros\packages\8.0\SAM\1.0.0\&#xD;&#xA;&#xD;&#xA;REM Create directories if they do not exist&#xA;if not exist &quot;%25SAM_DIR7%25&quot; mkdir &quot;%25SAM_DIR7%25&quot;&#xA;if not exist &quot;%25SAM_DIR8%25&quot; mkdir &quot;%25SAM_DIR8%25&quot;&#xA;&#xA;REM Copy files to Rhinoceros 7.0 directory&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR7%25&quot;&#xA;copy &quot;$(TargetDir)*.rhp&quot; &quot;%25SAM_DIR7%25&quot;&#xA;copy &quot;$(TargetDir)*.xml&quot; &quot;%25SAM_DIR7%25&quot;&#xA;&#xA;REM Copy files to Rhinoceros 8.0 directory&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR8%25&quot;&#xA;copy &quot;$(TargetDir)*.rhp&quot; &quot;%25SAM_DIR8%25&quot;&#xA;copy &quot;$(TargetDir)*.xml&quot; &quot;%25SAM_DIR8%25&quot;&#xA;&#xA;REM Create manifest.txt file in Rhinoceros 7.0 SAM directory&#xA;echo 1.0.0 &gt; &quot;c:\Users\DengusiakM\AppData\Roaming\McNeel\Rhinoceros\packages\7.0\SAM\manifest.txt&quot;&#xD;&#xA;&#xD;&#xA;REM Create manifest.txt file in Rhinoceros 8.0 SAM directory&#xA;echo 1.0.0 &gt; &quot;c:\Users\DengusiakM\AppData\Roaming\McNeel\Rhinoceros\packages\8.0\SAM\manifest.txt&quot;" />
   </Target>
   
 </Project>
