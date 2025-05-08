@@ -27,7 +27,7 @@ namespace SAM.Analytical.Rhino.UI
 
         protected override global::Rhino.Commands.Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            string path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SAM", "SAM Analytical.exe");
+            string path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "SAM", "SAM Analytical.exe");
             if(!System.IO.File.Exists(path))
             {
                 return global::Rhino.Commands.Result.Failure;
