@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Version>1.0</Version>
     <Title>SAM.Analytical.Rhino.Plugin</Title>
     <Description>Description of SAM.Analytical.Rhino.Plugin</Description>
@@ -31,8 +31,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="RhinoCommon" Version="7.4.21078.1001" IncludeAssets="compile;build" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RhinoCommon" Version="8.18.25100.11001" IncludeAssets="compile;build" />
   </ItemGroup>
   
   <ItemGroup>
