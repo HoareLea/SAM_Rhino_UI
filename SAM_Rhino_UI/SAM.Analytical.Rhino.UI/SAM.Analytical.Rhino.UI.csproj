@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net48-windows</TargetFramework>
     <Version>1.0</Version>
     <Title>SAM.Analytical.Rhino.Plugin</Title>
     <Description>Description of SAM.Analytical.Rhino.Plugin</Description>
@@ -12,16 +12,11 @@
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\**\*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Forms\**" />
-    <EmbeddedResource Remove="Forms\**" />
-    <None Remove="Forms\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +27,7 @@
   
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RhinoCommon" Version="8.18.25100.11001" IncludeAssets="compile;build" />
+    <PackageReference Include="RhinoCommon" Version="6.32.20340.21001" IncludeAssets="compile;build" ExcludeAssets="runtime"/>
   </ItemGroup>
   
   <ItemGroup>
@@ -67,7 +62,7 @@
   </ItemGroup>
   
   <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
-    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <StartProgram>C:\Program Files\Rhino 8\System\Rhino.exe</StartProgram>
     <StartArguments></StartArguments>
     <StartAction>Program</StartAction>
   </PropertyGroup>
