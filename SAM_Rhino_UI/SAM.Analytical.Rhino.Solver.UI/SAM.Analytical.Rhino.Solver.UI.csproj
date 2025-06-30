@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net48-windows</TargetFramework>
     <Version>1.0</Version>
     <Title>SAM.Analytical.Rhino.Solver.Plugin</Title>
     <Description>Description of SAM.Analytical.Rhino.Solver.Plugin</Description>
@@ -12,6 +12,7 @@
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,7 +41,7 @@
   </ItemGroup>
   
   <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
-    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <StartProgram>C:\Program Files\Rhino 8\System\Rhino.exe</StartProgram>
     <StartArguments></StartArguments>
     <StartAction>Program</StartAction>
   </PropertyGroup>
