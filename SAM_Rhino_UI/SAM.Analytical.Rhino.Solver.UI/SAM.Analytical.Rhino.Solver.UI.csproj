@@ -20,8 +20,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="9.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RhinoCommon" Version="6.32.20340.21001" IncludeAssets="compile;build" ExcludeAssets="runtime"/>
+    <PackageReference Include="RhinoCommon" Version="8.19.25132.1001" IncludeAssets="compile;build" />
   </ItemGroup>
   
   <ItemGroup>

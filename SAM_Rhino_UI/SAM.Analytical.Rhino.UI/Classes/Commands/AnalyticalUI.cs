@@ -33,7 +33,7 @@ namespace SAM.Analytical.Rhino.UI
                 return global::Rhino.Commands.Result.Failure;
             }
 
-            System.Diagnostics.Process.Start(path);
+            Core.Query.StartProcess(path);
             return global::Rhino.Commands.Result.Success;
         }
     }
