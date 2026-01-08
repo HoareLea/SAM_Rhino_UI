@@ -50,7 +50,6 @@ jobs:
             'SAM'
             'SAM_Solver'
             'SAM_UI'
-            'SAM_Rhino_UI'
             $repo
           )
 
@@ -92,7 +91,6 @@ jobs:
             'SAM'
             'SAM_Solver'
             'SAM_UI'
-            'SAM_Rhino_UI'
             $repo
           )
 
