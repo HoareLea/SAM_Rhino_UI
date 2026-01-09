@@ -103,7 +103,6 @@ jobs:
             '/p:UseSharedCompilation=false'
             '/p:RunPostBuildEvent=OnOutputUpdated'
             "/p:ReferencePath=$windowsRef"
-            '/p:Platform="Any CPU"'
           )
 
           $buildOrder = @(
