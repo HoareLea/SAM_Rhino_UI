@@ -9,16 +9,18 @@ on:
 
 jobs:
   build:
-    # Guard: if this workflow ever gets merged upstream (e.g. HoareLea),
-    # it will show as "skipped" there and won't break their CI.
-    if: github.repository_owner == 'SAM-BIM'
+    # 1) Only run in SAM-BIM org
+    # 2) Skip fork PRs because secrets (ORG_REPO_TOKEN) are NOT available there
+    if: |
+      github.repository_owner == 'SAM-BIM' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+
     runs-on: windows-2022
 
     env:
       MSBUILDDISABLENODEREUSE: "1"
       ORG_NAME: "SAM-BIM"
       # >>> CHANGE THIS PER REPO <<<
-      # Examples: SAM, SAM_gbXML, SAM_GEM, SAM_Tas, ...
       REPO_NAME: "SAM_Rhino_UI"
 
     steps:
@@ -38,8 +40,14 @@ jobs:
 
       - name: Clone dependency repos (siblings)
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.ORG_REPO_TOKEN }}
         run: |
           $ErrorActionPreference = 'Stop'
+
+          if (-not $env:GH_TOKEN) {
+            throw "Missing secret ORG_REPO_TOKEN. Add it in repo Settings → Secrets and variables → Actions."
+          }
 
           $org  = '${{ env.ORG_NAME }}'
           $repo = '${{ env.REPO_NAME }}'
@@ -57,8 +65,16 @@ jobs:
           $deps = $buildOrder[0..($buildOrder.Count-2)]
           foreach ($r in $deps) {
             if (Test-Path $r) { continue }
-            Write-Host "Cloning https://github.com/$org/$r.git"
-            git clone --depth 1 "https://github.com/$org/$r.git" $r
+
+            # Use token so private repos can be cloned
+            $url = "https://x-access-token:$($env:GH_TOKEN)@github.com/$org/$r.git"
+
+            Write-Host "Cloning $org/$r"
+            git clone --depth 1 $url $r
+
+            if ($LASTEXITCODE -ne 0 -or -not (Test-Path $r)) {
+              throw "Failed to clone $org/$r. Check token permissions (Contents: Read) and repo access."
+            }
           }
 
           # Ensure ReferencePath exists even before SAM_Windows builds
@@ -83,9 +99,6 @@ jobs:
             "/p:ReferencePath=$windowsRef"
           )
 
-          # If you really want Platform, use QUOTED Any CPU:
-          # $common += '/p:Platform="Any CPU"'
-
           # Same build order as above (keep repo LAST)
           $buildOrder = @(
             'SAM'
@@ -94,8 +107,10 @@ jobs:
             $repo
           )
 
-          # Convert build order -> solution paths (robust: first .sln in each folder)
+          # Convert build order -> solution paths (first .sln in each folder)
           $solutions = foreach ($r in $buildOrder) {
+            if (-not (Test-Path $r)) { throw "Repo folder missing: $r (clone step should have created it)" }
+
             $sln = Get-ChildItem -Path $r -Filter *.sln -File | Select-Object -First 1
             if (-not $sln) { throw "No .sln found under: $r" }
             $sln.FullName
@@ -104,11 +119,13 @@ jobs:
           foreach ($sln in $solutions) {
             Write-Host "==> Restore: $sln"
             & msbuild $sln /t:Restore @common
+            if ($LASTEXITCODE -ne 0) { throw "Restore failed: $sln" }
           }
 
           foreach ($sln in $solutions) {
             Write-Host "==> Rebuild: $sln"
             & msbuild $sln /t:Rebuild @common
+            if ($LASTEXITCODE -ne 0) { throw "Build failed: $sln" }
           }
 
       - name: Upload build folders (optional)
