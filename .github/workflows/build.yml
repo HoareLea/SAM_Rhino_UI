@@ -9,8 +9,7 @@ on:
 
 jobs:
   build:
-    # 1) Only run in SAM-BIM org
-    # 2) Skip fork PRs because secrets (ORG_REPO_TOKEN) are NOT available there
+    # Run only in SAM-BIM org; skip fork PRs because secrets are not available there
     if: |
       github.repository_owner == 'SAM-BIM' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
@@ -20,7 +19,6 @@ jobs:
     env:
       MSBUILDDISABLENODEREUSE: "1"
       ORG_NAME: "SAM-BIM"
-      # >>> CHANGE THIS PER REPO <<<
       REPO_NAME: "SAM_Rhino_UI"
 
     steps:
@@ -52,11 +50,20 @@ jobs:
           $org  = '${{ env.ORG_NAME }}'
           $repo = '${{ env.REPO_NAME }}'
 
-          # >>> ADJUST BUILD ORDER HERE IF NEEDED <<<
+          # Full dependency chain (same as SAM_UI), plus private SAM_Solver
           # Keep the current repo LAST.
           $buildOrder = @(
             'SAM'
             'SAM_Solver'
+            'SAM_Systems'
+            'SAM_Windows'
+            'SAM_Mollier'
+            'SAM_gbXML'
+            'SAM_SolarCalculator'
+            'SAM_Tas'
+            'SAM_Excel'
+            'SAM_GEM'
+            'SAM_LadybugTools'
             'SAM_UI'
             $repo
           )
@@ -66,7 +73,7 @@ jobs:
           foreach ($r in $deps) {
             if (Test-Path $r) { continue }
 
-            # Use token so private repos can be cloned
+            # Use token URL for all clones (works for public + private)
             $url = "https://x-access-token:$($env:GH_TOKEN)@github.com/$org/$r.git"
 
             Write-Host "Cloning $org/$r"
@@ -88,7 +95,6 @@ jobs:
           $repo = '${{ env.REPO_NAME }}'
           $windowsRef = (Resolve-Path 'SAM_Windows\build').Path
 
-          # IMPORTANT: keep these as an ARRAY of args (do NOT join into one string)
           $common = @(
             '/m:1'
             '/nr:false'
@@ -97,20 +103,26 @@ jobs:
             '/p:UseSharedCompilation=false'
             '/p:RunPostBuildEvent=OnOutputUpdated'
             "/p:ReferencePath=$windowsRef"
+            '/p:Platform="Any CPU"'
           )
 
-          # Same build order as above (keep repo LAST)
           $buildOrder = @(
             'SAM'
             'SAM_Solver'
+            'SAM_Systems'
+            'SAM_Windows'
+            'SAM_Mollier'
+            'SAM_gbXML'
+            'SAM_SolarCalculator'
+            'SAM_Tas'
+            'SAM_Excel'
+            'SAM_GEM'
+            'SAM_LadybugTools'
             'SAM_UI'
             $repo
           )
 
-          # Convert build order -> solution paths (first .sln in each folder)
           $solutions = foreach ($r in $buildOrder) {
-            if (-not (Test-Path $r)) { throw "Repo folder missing: $r (clone step should have created it)" }
-
             $sln = Get-ChildItem -Path $r -Filter *.sln -File | Select-Object -First 1
             if (-not $sln) { throw "No .sln found under: $r" }
             $sln.FullName
