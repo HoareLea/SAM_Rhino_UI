@@ -51,6 +51,9 @@
     <Reference Include="SAM.Core">
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Core.Rhino">
+      <HintPath>..\..\..\SAM\build\SAM.Core.Rhino.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Geometry">
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
