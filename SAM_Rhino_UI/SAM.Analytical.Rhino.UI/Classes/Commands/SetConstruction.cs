@@ -30,9 +30,9 @@ namespace SAM.Analytical.Rhino.UI
             if (result != global::Rhino.Commands.Result.Success || obj_refs == null)
                 return result;
 
-            MaterialLibrary materialLibrary = Query.DefaultMaterialLibrary();
+            MaterialLibrary materialLibrary = Analytical.Query.DefaultMaterialLibrary();
 
-            ConstructionLibrary constructionLibrary = Query.DefaultConstructionLibrary();
+            ConstructionLibrary constructionLibrary = Analytical.Query.DefaultConstructionLibrary();
 
             Construction construction = null;
             using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
@@ -48,7 +48,7 @@ namespace SAM.Analytical.Rhino.UI
                     ConstructionLibrary constructionLibrary_New = constructionLibraryForm.ConstructionLibrary;
                     if (constructionLibrary_New != null)
                     {
-                        Core.Convert.ToFile(new IJSAMObject[] { constructionLibrary_New }, Query.DefaultConstructionLibraryPath());
+                        Core.Convert.ToFile(new IJSAMObject[] { constructionLibrary_New }, Analytical.Query.DefaultConstructionLibraryPath());
                     }
                 }
             }

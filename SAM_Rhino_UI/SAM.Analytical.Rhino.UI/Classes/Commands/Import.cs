@@ -85,7 +85,7 @@ namespace SAM.Analytical.Rhino.UI
 
                 if (analyticalObject is Panel panel)
                 {
-                    Layer layer = Core.Rhino.Modify.GetLayer(layerTable, layer_PanelType.Id, Core.Query.Description(panel.PanelType), Query.Color(panel.PanelType));
+                    Layer layer = Core.Rhino.Modify.GetLayer(layerTable, layer_PanelType.Id, Core.Query.Description(panel.PanelType), Analytical.Query.Color(panel.PanelType));
                     objectAttributes.LayerIndex = layer.Index;
 
                     guid = doc.Objects.AddBrep(panel.Face3D.ToRhino_Brep(), objectAttributes);
@@ -94,7 +94,7 @@ namespace SAM.Analytical.Rhino.UI
                 {
                     ApertureType apertureType = aperture.ApertureType;
 
-                    Layer layer = Core.Rhino.Modify.GetLayer(layerTable, layer_ApertureType.Id, apertureType.ToString(), Query.Color(apertureType));
+                    Layer layer = Core.Rhino.Modify.GetLayer(layerTable, layer_ApertureType.Id, apertureType.ToString(), Analytical.Query.Color(apertureType));
                     objectAttributes.LayerIndex = layer.Index;
 
                     guid = doc.Objects.AddBrep(aperture.Face3D.ToRhino_Brep(), objectAttributes);

@@ -155,7 +155,7 @@ namespace SAM.Analytical.Rhino.UI
 
                             PanelType panelType = face3D.GetPlane().Normal.PanelType();
 
-                            Panel panel_Temp = Create.Panel(Query.DefaultConstruction(panelType), panelType, face3D);
+                            Panel panel_Temp = Create.Panel(Analytical.Query.DefaultConstruction(panelType), panelType, face3D);
                             if (panel_Temp == null)
                             {
                                 continue;
@@ -173,14 +173,14 @@ namespace SAM.Analytical.Rhino.UI
                 return global::Rhino.Commands.Result.Failure;
             }
 
-            MaterialLibrary materialLibrary = Query.DefaultMaterialLibrary();
+            MaterialLibrary materialLibrary = Analytical.Query.DefaultMaterialLibrary();
 
 
 
             List<Panel> panels = analyticalObjects.FindAll(x => x is Panel)?.Cast<Panel>()?.ToList();
             if (panels != null && panels.Count != 0)
             {
-                ConstructionLibrary constructionLibrary = Query.DefaultConstructionLibrary();
+                ConstructionLibrary constructionLibrary = Analytical.Query.DefaultConstructionLibrary();
 
                 Panel panel = null;
                 using (PanelForm panelForm = new PanelForm(panels?.First(), materialLibrary, constructionLibrary, Core.Query.Enums(typeof(PanelParameter), typeof(Analytical.Solver.SolverParameter))))
@@ -211,7 +211,7 @@ namespace SAM.Analytical.Rhino.UI
             List<Aperture> apertures = analyticalObjects.FindAll(x => x is Aperture)?.Cast<Aperture>()?.ToList();
             if (apertures != null && apertures.Count != 0)
             {
-                ApertureConstructionLibrary apertureConstructionLibrary = Query.DefaultApertureConstructionLibrary();
+                ApertureConstructionLibrary apertureConstructionLibrary = Analytical.Query.DefaultApertureConstructionLibrary();
 
                 Aperture aperture = null;
                 using (ApertureForm apertureForm = new ApertureForm(apertures.FirstOrDefault(), materialLibrary, apertureConstructionLibrary, Core.Query.Enums(typeof(ApertureParameter))))

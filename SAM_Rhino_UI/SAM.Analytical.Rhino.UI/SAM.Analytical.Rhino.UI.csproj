@@ -45,6 +45,9 @@
     <Reference Include="SAM.Analytical.Solver">
       <HintPath>..\..\..\SAM_Solver\build\SAM.Analytical.Solver.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.UI.WPF">
+      <HintPath>..\..\..\SAM_UI\build\SAM.Analytical.UI.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Analytical.Windows">
       <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
     </Reference>
