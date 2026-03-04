@@ -85,7 +85,7 @@ namespace SAM.Analytical.Rhino.UI
 
                 if (analyticalObject is Panel panel)
                 {
-                    Layer layer = Core.Rhino.Modify.GetLayer(layerTable, layer_PanelType.Id, panel.GetType().Name, Query.Color(panel));
+                    Layer layer = Core.Rhino.Modify.GetLayer(layerTable, layer_PanelType.Id, Core.Query.Description(panel.PanelType), Query.Color(panel.PanelType));
                     objectAttributes.LayerIndex = layer.Index;
 
                     guid = doc.Objects.AddBrep(panel.Face3D.ToRhino_Brep(), objectAttributes);
@@ -107,15 +107,15 @@ namespace SAM.Analytical.Rhino.UI
 
                     System.Drawing.Color color = Core.Create.Color(internalConditionName);
 
-                    Layer layer_Level = Core.Rhino.Modify.GetLayer(layerTable, layer_Spaces.Id, internalConditionName, color);
+                    //Layer layer_Level = Core.Rhino.Modify.GetLayer(layerTable, layer_Spaces.Id, internalConditionName, color);
 
-                    string layerName = space.Name;
-                    if (string.IsNullOrWhiteSpace(layerName))
-                        layerName = "???";
+                    //string layerName = space.Name;
+                    //if (string.IsNullOrWhiteSpace(layerName))
+                    //    layerName = "???";
 
-                    color = Core.Create.Color(layerName);
+                    color = Core.Create.Color(internalConditionName);
 
-                    Layer layer_Space = Core.Rhino.Modify.GetLayer(layerTable, layer_Level.Id, layerName, color);
+                    Layer layer_Space = Core.Rhino.Modify.GetLayer(layerTable, layer_Spaces.Id, internalConditionName, color);
 
                     objectAttributes.LayerIndex = layer_Space.Index;
 
