@@ -231,7 +231,7 @@ namespace SAM.Analytical.Rhino.UI
                         apertures[i] = new Aperture(apertures[i].Guid, aperture, apertures[i].Face3D);
                     }
 
-                    string @string = Core.Convert.ToString(panels);
+                    string @string = Core.Convert.ToString(apertures);
 
                     brep.SetUserString("SAM", @string);
                 }
