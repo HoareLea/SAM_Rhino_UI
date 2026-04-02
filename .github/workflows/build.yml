@@ -51,7 +51,7 @@ jobs:
           $org  = '${{ env.ORG_NAME }}'
           $repo = '${{ env.REPO_NAME }}'
 
-          # Full dependency chain (same as SAM_UI), plus private SAM_Solver.
+          # Full dependency chain, plus private SAM_Solver.
           # Keep the current repo LAST.
           $buildOrder = @(
             'SAM'
@@ -74,7 +74,6 @@ jobs:
           foreach ($r in $deps) {
             if (Test-Path $r) { continue }
 
-            # Use token URL for all clones (works for public + private)
             $url = "https://x-access-token:$($env:GH_TOKEN)@github.com/$org/$r.git"
 
             Write-Host "Cloning $org/$r"
@@ -97,8 +96,11 @@ jobs:
           $repo = '${{ env.REPO_NAME }}'
           $windowsRef = (Resolve-Path 'SAM_Windows\build').Path
           $uiRef      = (Resolve-Path 'SAM_UI\build').Path
-          $env:ReferencePath = "$windowsRef;$uiRef"
-          Write-Host "ReferencePath=$env:ReferencePath"
+
+          # MSBuild treats semicolons in /p values specially.
+          # Escape them so ReferencePath remains one property value without embedded quotes.
+          $referencePathEscaped = "$windowsRef%3B$uiRef"
+          Write-Host "ReferencePath=$windowsRef;$uiRef"
 
           $common = @(
             '/m:1'
@@ -107,7 +109,7 @@ jobs:
             '/p:Configuration=Release'
             '/p:UseSharedCompilation=false'
             '/p:RunPostBuildEvent=OnOutputUpdated'
-            "/p:ReferencePath=""$($env:ReferencePath)"""
+            "/p:ReferencePath=$referencePathEscaped"
           )
 
           $buildOrder = @(
