@@ -20,6 +20,7 @@ jobs:
       MSBUILDDISABLENODEREUSE: "1"
       ORG_NAME: "SAM-BIM"
       REPO_NAME: "SAM_Rhino_UI"
+      NUGET_XMLDOC_MODE: "skip"
 
     steps:
       - name: Checkout this repo
@@ -44,13 +45,13 @@ jobs:
           $ErrorActionPreference = 'Stop'
 
           if (-not $env:GH_TOKEN) {
-            throw "Missing secret ORG_REPO_TOKEN. Add it in repo Settings → Secrets and variables → Actions."
+            throw "Missing secret ORG_REPO_TOKEN. Add it in repo Settings -> Secrets and variables -> Actions."
           }
 
           $org  = '${{ env.ORG_NAME }}'
           $repo = '${{ env.REPO_NAME }}'
 
-          # Full dependency chain (same as SAM_UI), plus private SAM_Solver
+          # Full dependency chain, plus private SAM_Solver.
           # Keep the current repo LAST.
           $buildOrder = @(
             'SAM'
@@ -73,7 +74,6 @@ jobs:
           foreach ($r in $deps) {
             if (Test-Path $r) { continue }
 
-            # Use token URL for all clones (works for public + private)
             $url = "https://x-access-token:$($env:GH_TOKEN)@github.com/$org/$r.git"
 
             Write-Host "Cloning $org/$r"
@@ -84,8 +84,9 @@ jobs:
             }
           }
 
-          # Ensure ReferencePath exists even before SAM_Windows builds
+          # Ensure ReferencePath folders exist even before dependency builds
           New-Item -ItemType Directory -Force -Path "SAM_Windows\build" | Out-Null
+          New-Item -ItemType Directory -Force -Path "SAM_UI\build"      | Out-Null
 
       - name: Restore + Rebuild in order (CI props like SAM_Deploy)
         shell: pwsh
@@ -94,6 +95,12 @@ jobs:
 
           $repo = '${{ env.REPO_NAME }}'
           $windowsRef = (Resolve-Path 'SAM_Windows\build').Path
+          $uiRef      = (Resolve-Path 'SAM_UI\build').Path
+
+          # MSBuild treats semicolons in /p values specially.
+          # Escape them so ReferencePath remains one property value without embedded quotes.
+          $referencePathEscaped = "$windowsRef%3B$uiRef"
+          Write-Host "ReferencePath=$windowsRef;$uiRef"
 
           $common = @(
             '/m:1'
@@ -102,7 +109,7 @@ jobs:
             '/p:Configuration=Release'
             '/p:UseSharedCompilation=false'
             '/p:RunPostBuildEvent=OnOutputUpdated'
-            "/p:ReferencePath=$windowsRef"
+            "/p:ReferencePath=$referencePathEscaped"
           )
 
           $buildOrder = @(
