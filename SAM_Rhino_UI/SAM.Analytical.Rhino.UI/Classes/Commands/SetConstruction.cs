@@ -38,21 +38,27 @@ namespace SAM.Analytical.Rhino.UI
             ConstructionLibrary constructionLibrary = Analytical.Query.DefaultConstructionLibrary();
 
             Construction construction = null;
-            using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
-            {
-                if (constructionLibraryForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return global::Rhino.Commands.Result.Cancel;
-                }
 
-                construction = constructionLibraryForm.GetConstructions()?.FirstOrDefault();
-                if (construction != null)
+            // ConstructionLibraryWindow's DataGrid_Constructions defaults to SelectionMode="Single" in
+            // XAML, matching the WinForms DataGridView_Constructions.MultiSelect = false default this
+            // call site relied on implicitly (it never set MultiSelect) - no explicit MultiSelect
+            // assignment needed here to preserve that.
+            Analytical.UI.ConstructionLibraryWindow constructionLibraryWindow = new Analytical.UI.ConstructionLibraryWindow(materialLibrary, constructionLibrary);
+
+            new System.Windows.Interop.WindowInteropHelper(constructionLibraryWindow).Owner = global::Rhino.RhinoApp.MainWindowHandle();
+
+            if (constructionLibraryWindow.ShowDialog() != true)
+            {
+                return global::Rhino.Commands.Result.Cancel;
+            }
+
+            construction = constructionLibraryWindow.GetConstructions()?.FirstOrDefault();
+            if (construction != null)
+            {
+                ConstructionLibrary constructionLibrary_New = constructionLibraryWindow.ConstructionLibrary;
+                if (constructionLibrary_New != null)
                 {
-                    ConstructionLibrary constructionLibrary_New = constructionLibraryForm.ConstructionLibrary;
-                    if (constructionLibrary_New != null)
-                    {
-                        Core.Convert.ToFile(new IJSAMObject[] { constructionLibrary_New }, Analytical.Query.DefaultConstructionLibraryPath());
-                    }
+                    Core.Convert.ToFile(new IJSAMObject[] { constructionLibrary_New }, Analytical.Query.DefaultConstructionLibraryPath());
                 }
             }
 

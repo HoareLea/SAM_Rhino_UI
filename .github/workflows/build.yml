@@ -87,11 +87,16 @@ jobs:
           $buildOrder = @(
             'SAM'
             'SAM_Solver'
+            'SAM_Mollier'
             'SAM_Systems'
             'SAM_Windows'
-            'SAM_Mollier'
             'SAM_gbXML'
             'SAM_SolarCalculator'
+            # Must precede SAM_Tas: SAM_Tas\benchmark\SAM.Analytical.Tas.Benchmark references
+            # SAM_Validation\build\SAM.Analytical.Benchmark.dll by HintPath, and without it it fails
+            # CS0234. Same slot as BuildAlls_v4.csproj uses locally. Needs only SAM and SAM_Mollier,
+            # both already above.
+            'SAM_Validation'
             'SAM_Tas'
             'SAM_Excel'
             'SAM_GEM'
@@ -166,11 +171,16 @@ jobs:
           $buildOrder = @(
             'SAM'
             'SAM_Solver'
+            'SAM_Mollier'
             'SAM_Systems'
             'SAM_Windows'
-            'SAM_Mollier'
             'SAM_gbXML'
             'SAM_SolarCalculator'
+            # Must precede SAM_Tas: SAM_Tas\benchmark\SAM.Analytical.Tas.Benchmark references
+            # SAM_Validation\build\SAM.Analytical.Benchmark.dll by HintPath, and without it it fails
+            # CS0234. Same slot as BuildAlls_v4.csproj uses locally. Needs only SAM and SAM_Mollier,
+            # both already above.
+            'SAM_Validation'
             'SAM_Tas'
             'SAM_Excel'
             'SAM_GEM'

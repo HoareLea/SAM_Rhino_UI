@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net48-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Version>1.0</Version>
     <Title>SAM.Analytical.Rhino.Plugin</Title>
     <Description>Description of SAM.Analytical.Rhino.Plugin</Description>
     <TargetExt>.rhp</TargetExt>
     <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -45,6 +47,9 @@
     <Reference Include="SAM.Analytical.Solver">
       <HintPath>..\..\..\SAM_Solver\build\SAM.Analytical.Solver.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.UI">
+      <HintPath>..\..\..\SAM_UI\build\SAM.Analytical.UI.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Analytical.UI.WPF">
       <HintPath>..\..\..\SAM_UI\build\SAM.Analytical.UI.WPF.dll</HintPath>
     </Reference>
@@ -81,8 +86,21 @@
     <DocumentationFile>..\..\..\build\Rhino Plugins\SAM.Analytical.Rhino.Plugin.xml</DocumentationFile>
   </PropertyGroup>
   
+  <!--
+  stdole.dll (v7.0.3300.0, .NET Framework 1.x OLE PIA) is pulled in by the reference walk of
+  SAM.Analytical.UI.WPF.dll -> Interop.* (EDSL Tas). It references mscorlib APIs that do not
+  exist on .NET (Core), so Rhino 8/9's compatibility scan rejects the whole plugin if it ships.
+  If a new %TEMP%\RhinoCompat report ever names another assembly, add one Remove line per filename.
+-->
+  <Target Name="RemoveNetFxOnlyAssemblies" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(Filename)' == 'stdole'" />
+      <ReferenceDependencyPaths Remove="@(ReferenceDependencyPaths)" Condition="'%(Filename)' == 'stdole'" />
+    </ItemGroup>
+  </Target>
+  
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="@echo off&#xA;REM Set directories for Rhinoceros versions 7.0 and 8.0&#xA;set SAM_DIR7=$(APPDATA)\McNeel\Rhinoceros\packages\7.0\SAM\1.0.0\&#xA;set SAM_DIR8=$(APPDATA)\McNeel\Rhinoceros\packages\8.0\SAM\1.0.0\&#xD;&#xA;&#xD;&#xA;REM Create directories if they do not exist&#xA;if not exist &quot;%25SAM_DIR7%25&quot; mkdir &quot;%25SAM_DIR7%25&quot;&#xA;if not exist &quot;%25SAM_DIR8%25&quot; mkdir &quot;%25SAM_DIR8%25&quot;&#xA;&#xA;REM Copy files to Rhinoceros 7.0 directory&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR7%25&quot;&#xA;copy &quot;$(TargetDir)*.rhp&quot; &quot;%25SAM_DIR7%25&quot;&#xA;copy &quot;$(TargetDir)*.xml&quot; &quot;%25SAM_DIR7%25&quot;&#xA;&#xA;REM Copy files to Rhinoceros 8.0 directory&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR8%25&quot;&#xA;copy &quot;$(TargetDir)*.rhp&quot; &quot;%25SAM_DIR8%25&quot;&#xA;copy &quot;$(TargetDir)*.xml&quot; &quot;%25SAM_DIR8%25&quot;&#xA;&#xA;REM Create manifest.txt file in Rhinoceros 7.0 SAM directory&#xA;echo 1.0.0 &gt; &quot;%25APPDATA%25\McNeel\Rhinoceros\packages\7.0\SAM\manifest.txt&quot;&#xD;&#xA;&#xD;&#xA;REM Create manifest.txt file in Rhinoceros 8.0 SAM directory&#xA;echo 1.0.0 &gt; &quot;%25APPDATA%25\McNeel\Rhinoceros\packages\8.0\SAM\manifest.txt&quot;" />
+    <Exec Command="@echo off&#xA;REM Set directories for Rhinoceros versions 8.0 and 9.0&#xA;set SAM_DIR8=$(APPDATA)\McNeel\Rhinoceros\packages\8.0\SAM\1.0.0\&#xA;set SAM_DIR9=$(APPDATA)\McNeel\Rhinoceros\packages\9.0\SAM\1.0.0\&#xD;&#xA;&#xD;&#xA;REM Create directories if they do not exist&#xA;if not exist &quot;%25SAM_DIR8%25&quot; mkdir &quot;%25SAM_DIR8%25&quot;&#xA;if not exist &quot;%25SAM_DIR9%25&quot; mkdir &quot;%25SAM_DIR9%25&quot;&#xA;&#xA;REM Remove .NET Framework-only assemblies that break the Rhino 8/9 .NET (Core) compatibility check&#xA;if exist &quot;$(TargetDir)stdole.dll&quot; del /f /q &quot;$(TargetDir)stdole.dll&quot;&#xA;if exist &quot;%25SAM_DIR8%25stdole.dll&quot; del /f /q &quot;%25SAM_DIR8%25stdole.dll&quot;&#xA;if exist &quot;%25SAM_DIR9%25stdole.dll&quot; del /f /q &quot;%25SAM_DIR9%25stdole.dll&quot;&#xA;&#xA;REM Copy files to Rhinoceros 8.0 directory&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR8%25&quot;&#xA;copy &quot;$(TargetDir)*.rhp&quot; &quot;%25SAM_DIR8%25&quot;&#xA;copy &quot;$(TargetDir)*.xml&quot; &quot;%25SAM_DIR8%25&quot;&#xA;copy &quot;$(TargetDir)*.json&quot; &quot;%25SAM_DIR8%25&quot;&#xA;&#xA;REM Copy files to Rhinoceros 9.0 directory&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR9%25&quot;&#xA;copy &quot;$(TargetDir)*.rhp&quot; &quot;%25SAM_DIR9%25&quot;&#xA;copy &quot;$(TargetDir)*.xml&quot; &quot;%25SAM_DIR9%25&quot;&#xA;copy &quot;$(TargetDir)*.json&quot; &quot;%25SAM_DIR9%25&quot;&#xA;&#xA;REM Create manifest.txt file in Rhinoceros 8.0 SAM directory&#xA;echo 1.0.0 &gt; &quot;%25APPDATA%25\McNeel\Rhinoceros\packages\8.0\SAM\manifest.txt&quot;&#xD;&#xA;&#xD;&#xA;REM Create manifest.txt file in Rhinoceros 9.0 SAM directory&#xA;echo 1.0.0 &gt; &quot;%25APPDATA%25\McNeel\Rhinoceros\packages\9.0\SAM\manifest.txt&quot;" />
   </Target>
   
 </Project>

@@ -6,7 +6,6 @@ using Rhino.Commands;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 using Rhino.Input;
-using SAM.Analytical.Windows.Forms;
 using SAM.Core;
 using SAM.Geometry.Spatial;
 using System.Collections.Generic;
@@ -81,15 +80,24 @@ namespace SAM.Analytical.Rhino.UI
             if (spaces != null)
             {
                 Space space = null;
-                using (SpaceForm spaceForm = new SpaceForm(spaces?.First(), Core.Query.Enums(typeof(SpaceParameter))))
-                {
-                    if (spaceForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                    {
-                        return global::Rhino.Commands.Result.Cancel;
-                    }
 
-                    space = spaceForm.Space;
+                // No AnalyticalModel is in scope here - this can be a Space just invented from the
+                // clicked point (see above), not one read out of a real model. The WinForms SpaceForm
+                // had a dedicated (space, enums) constructor for exactly this case, with no
+                // ProfileLibrary/AdjacencyCluster; SpaceWindow degrades the same way with a null
+                // AnalyticalModel (every AnalyticalModel-dependent path in InternalConditionControl is
+                // guarded by a null-check before it would dereference it) - confirmed before writing
+                // this, not assumed.
+                Analytical.UI.WPF.SpaceWindow spaceWindow = new Analytical.UI.WPF.SpaceWindow(spaces?.First(), null, Core.Query.Enums(typeof(SpaceParameter)));
+
+                new System.Windows.Interop.WindowInteropHelper(spaceWindow).Owner = global::Rhino.RhinoApp.MainWindowHandle();
+
+                if (spaceWindow.ShowDialog() != true)
+                {
+                    return global::Rhino.Commands.Result.Cancel;
                 }
+
+                space = spaceWindow.Space;
 
                 if (space != null)
                 {
@@ -183,15 +191,16 @@ namespace SAM.Analytical.Rhino.UI
                 ConstructionLibrary constructionLibrary = Analytical.Query.DefaultConstructionLibrary();
 
                 Panel panel = null;
-                using (PanelForm panelForm = new PanelForm(panels?.First(), materialLibrary, constructionLibrary, Core.Query.Enums(typeof(PanelParameter), typeof(Analytical.Solver.SolverParameter))))
-                {
-                    if (panelForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                    {
-                        return global::Rhino.Commands.Result.Cancel;
-                    }
+                Analytical.UI.PanelWindow panelWindow = new Analytical.UI.PanelWindow(panels?.First(), materialLibrary, constructionLibrary, Core.Query.Enums(typeof(PanelParameter), typeof(Analytical.Solver.SolverParameter)));
 
-                    panel = panelForm.Panel;
+                new System.Windows.Interop.WindowInteropHelper(panelWindow).Owner = global::Rhino.RhinoApp.MainWindowHandle();
+
+                if (panelWindow.ShowDialog() != true)
+                {
+                    return global::Rhino.Commands.Result.Cancel;
                 }
+
+                panel = panelWindow.Panel;
 
                 if (panel != null)
                 {
@@ -214,15 +223,16 @@ namespace SAM.Analytical.Rhino.UI
                 ApertureConstructionLibrary apertureConstructionLibrary = Analytical.Query.DefaultApertureConstructionLibrary();
 
                 Aperture aperture = null;
-                using (ApertureForm apertureForm = new ApertureForm(apertures.FirstOrDefault(), materialLibrary, apertureConstructionLibrary, Core.Query.Enums(typeof(ApertureParameter))))
-                {
-                    if (apertureForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                    {
-                        return global::Rhino.Commands.Result.Cancel;
-                    }
+                Analytical.UI.ApertureWindow apertureWindow = new Analytical.UI.ApertureWindow(apertures.FirstOrDefault(), materialLibrary, apertureConstructionLibrary, Core.Query.Enums(typeof(ApertureParameter)));
 
-                    aperture = apertureForm.Aperture;
+                new System.Windows.Interop.WindowInteropHelper(apertureWindow).Owner = global::Rhino.RhinoApp.MainWindowHandle();
+
+                if (apertureWindow.ShowDialog() != true)
+                {
+                    return global::Rhino.Commands.Result.Cancel;
                 }
+
+                aperture = apertureWindow.Aperture;
 
                 if (aperture != null)
                 {
